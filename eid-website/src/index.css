@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+  html,
+  body {
+    @apply bg-primary text-white font-body overflow-x-hidden;
+    background: linear-gradient(135deg, #0F172A, #1E293B);
+    background-attachment: fixed;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading overflow-hidden;
+  }
+}
