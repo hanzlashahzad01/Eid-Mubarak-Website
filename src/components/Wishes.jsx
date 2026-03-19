@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
@@ -7,8 +7,10 @@ const Wishes = () => {
     const [wish, setWish] = useState('');
     const [isTyping, setIsTyping] = useState(false);
 
+    const intervalRef = useRef(null);
+
     const generateWish = () => {
-        if (!name.trim()) return;
+        if (!name.trim() || isTyping) return;
 
         const wishes = [
             `Eid Mubarak, ${name}! May your day be filled with joy and sweetness! 🍭`,
@@ -19,17 +21,21 @@ const Wishes = () => {
         ];
 
         const randomWish = wishes[Math.floor(Math.random() * wishes.length)];
+        
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        
         setWish('');
         setIsTyping(true);
 
         // Simulating typing effect
         let index = 0;
-        const interval = setInterval(() => {
+        intervalRef.current = setInterval(() => {
             if (index <= randomWish.length) {
                 setWish(randomWish.slice(0, index));
                 index++;
             } else {
-                clearInterval(interval);
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
                 setIsTyping(false);
                 confetti({
                     particleCount: 100,
@@ -64,9 +70,10 @@ const Wishes = () => {
                         />
                         <button
                             onClick={generateWish}
-                            className="bg-accent hover:bg-yellow-500 text-primary font-bold px-8 py-4 rounded-2xl transition-all hover:scale-105 active:scale-95 text-xl"
+                            disabled={isTyping || !name.trim()}
+                            className={`${isTyping || !name.trim() ? 'bg-gray-400 cursor-not-allowed opacity-50' : 'bg-accent hover:bg-yellow-500 hover:scale-105 active:scale-95'} text-primary font-bold px-8 py-4 rounded-2xl transition-all text-xl`}
                         >
-                            Generate Wish ✨
+                            {isTyping ? 'Typing... ✍️' : 'Generate Wish ✨'}
                         </button>
                     </div>
 
